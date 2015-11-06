@@ -51,7 +51,8 @@ const char VERSION[10] = "0.0.2";   // um7_driver version
 
 // Don't try to be too clever. Arrival of this message triggers
 // us to publish everything we have.
-const uint8_t TRIGGER_PACKET = DREG_EULER_PHI_THETA;
+//const uint8_t TRIGGER_PACKET = DREG_EULER_PHI_THETA;
+const uint8_t TRIGGER_PACKET = DREG_GYRO_PROC_X;
 
 /**
  * Function generalizes the process of writing an XYZ vector into consecutive
@@ -114,28 +115,28 @@ void configureSensor(um7::Comms* sensor)
       throw std::runtime_error("Unable to set CREG_COM_SETTINGS.");
     }
 
-    uint32_t raw_rate = (20 << RATE2_ALL_RAW_START);
+    uint32_t raw_rate = (1 << RATE2_ALL_RAW_START);
     r.comrate2.set(0, raw_rate);
     if (!sensor->sendWaitAck(r.comrate2))
     {
       throw std::runtime_error("Unable to set CREG_COM_RATES2.");
     }
 
-    uint32_t proc_rate = (20 << RATE4_ALL_PROC_START);
+    uint32_t proc_rate = (100 << RATE4_ALL_PROC_START);
     r.comrate4.set(0, proc_rate);
     if (!sensor->sendWaitAck(r.comrate4))
     {
       throw std::runtime_error("Unable to set CREG_COM_RATES4.");
     }
 
-    uint32_t misc_rate = (20 << RATE5_EULER_START) | (20 << RATE5_QUAT_START);
+    uint32_t misc_rate = (1 << RATE5_EULER_START) | (1 << RATE5_QUAT_START);
     r.comrate5.set(0, misc_rate);
     if (!sensor->sendWaitAck(r.comrate5))
     {
       throw std::runtime_error("Unable to set CREG_COM_RATES5.");
     }
 
-    uint32_t health_rate = (5 << RATE6_HEALTH_START);  // note:  5 gives 2 hz rate
+    uint32_t health_rate = (1 << RATE6_HEALTH_START);  // note:  5 gives 2 hz rate
     r.comrate6.set(0, health_rate);
     if (!sensor->sendWaitAck(r.comrate6))
     {
